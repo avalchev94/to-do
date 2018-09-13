@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"bytes"
@@ -78,9 +78,9 @@ func parseParameters(r *http.Request, pattern string) map[string]interface{} {
 }
 
 func getCurrentUserID(r *http.Request) (int64, error) {
-	cookie, err := r.Cookie(AuthCookie)
+	cookie, err := r.Cookie(authCookie)
 	if err != nil {
 		return 0, err
 	}
-	return GetSessionUser(cookie.Value)
+	return getSessionUser(cookie.Value)
 }

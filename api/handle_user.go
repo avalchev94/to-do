@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"encoding/json"
@@ -41,7 +41,7 @@ func handleUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleUserGet(w http.ResponseWriter, r *http.Request, userID int64) {
-	user, err := database.GetUser(userID, DB)
+	user, err := database.GetUser(userID, db)
 	if err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
@@ -50,7 +50,7 @@ func handleUserGet(w http.ResponseWriter, r *http.Request, userID int64) {
 }
 
 func handleUserLabelsGet(w http.ResponseWriter, r *http.Request, userID int64) {
-	labels, err := database.GetLabels(userID, DB)
+	labels, err := database.GetLabels(userID, db)
 	if err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
@@ -59,7 +59,7 @@ func handleUserLabelsGet(w http.ResponseWriter, r *http.Request, userID int64) {
 }
 
 func handleUserTasksGet(w http.ResponseWriter, r *http.Request, userID int64) {
-	tasks, err := database.GetTasks(userID, DB)
+	tasks, err := database.GetTasks(userID, db)
 	if err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
@@ -73,7 +73,7 @@ func handleUserRegister(w http.ResponseWriter, r *http.Request) {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
 	}
-	if err := user.Add(DB); err != nil {
+	if err := user.Add(db); err != nil {
 		//TODO: Not always the error is InternalServerError
 		respondErr(w, r, err, http.StatusInternalServerError)
 		return

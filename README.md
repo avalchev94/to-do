@@ -26,10 +26,10 @@ After you have every of the above requirements:
     #go to to-do-app main directory
     psql -U $PG_USER todo_app < config/todoapp.sql
   ```
-5. Go to /api folder:
+5. Go to ./cmd/todo_app folder:
   ```bash
-  go build*
-  ./api
+  go build
+  ./todo_app api
   ```
 # API Documentation 
 * **GET /login** Returns the currently logged user:

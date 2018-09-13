@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"time"
@@ -6,20 +6,18 @@ import (
 	"github.com/google/uuid"
 )
 
-// NewLoginSession creates session uuid for the user id.
-func NewLoginSession(id int64) (string, error) {
+func newLoginSession(id int64) (string, error) {
 	uuid := uuid.New().String()
-	if err := RedisConn.Set(uuid, id, 24*time.Hour).Err(); err != nil {
+	if err := redisConn.Set(uuid, id, 24*time.Hour).Err(); err != nil {
 		return "", err
 	}
-	RedisConn.Save()
+	redisConn.Save()
 
 	return uuid, nil
 }
 
-// GetSessionUser returns the user's id mapped to the uuid.
-func GetSessionUser(uuid string) (int64, error) {
-	result := RedisConn.Get(uuid)
+func getSessionUser(uuid string) (int64, error) {
+	result := redisConn.Get(uuid)
 	if result.Err() != nil {
 		return -1, result.Err()
 	}

@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"encoding/json"
@@ -9,8 +9,7 @@ import (
 )
 
 const (
-	//AuthCookie is the name of the Authentication Cookie
-	AuthCookie = "AuthCookie"
+	authCookie = "AuthCookie"
 )
 
 func handleLogin(w http.ResponseWriter, r *http.Request) {
@@ -31,7 +30,7 @@ func handleLoginGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := database.GetUser(userID, DB)
+	user, err := database.GetUser(userID, db)
 	if err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
@@ -53,19 +52,19 @@ func handleLoginPost(w http.ResponseWriter, r *http.Request) {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
 	}
-	user, err := database.VerifyLogin(loginData.Name, loginData.Password, DB)
+	user, err := database.VerifyLogin(loginData.Name, loginData.Password, db)
 	if err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
 	}
 
-	uuid, err := NewLoginSession(user.ID)
+	uuid, err := newLoginSession(user.ID)
 	if err != nil {
 		respondErr(w, r, err, http.StatusInternalServerError)
 		return
 	}
 	http.SetCookie(w, &http.Cookie{
-		Name:  AuthCookie,
+		Name:  authCookie,
 		Value: uuid,
 	})
 	respond(w, r, nil, http.StatusOK)

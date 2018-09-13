@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"encoding/json"
@@ -36,7 +36,7 @@ func handleTaskPost(w http.ResponseWriter, r *http.Request) {
 	}
 	task.UserID = userID
 
-	if err := task.Add(DB); err != nil {
+	if err := task.Add(db); err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
 	}
@@ -53,7 +53,7 @@ func handleTaskGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	task, err := database.GetTask(taskID.(int64), DB)
+	task, err := database.GetTask(taskID.(int64), db)
 	if err != nil {
 		respondErr(w, r, err, http.StatusInternalServerError)
 		return

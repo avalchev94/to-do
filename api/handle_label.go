@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"encoding/json"
@@ -36,7 +36,7 @@ func handlePostLabel(w http.ResponseWriter, r *http.Request) {
 	}
 	label.UserID = userID
 
-	if err := label.Add(DB); err != nil {
+	if err := label.Add(db); err != nil {
 		//TODO: Not always the error is InternalServerError
 		respondErr(w, r, err, http.StatusInternalServerError)
 		return
@@ -54,7 +54,7 @@ func handleGetLabel(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	label, err := database.GetLabel(userID.(int64), DB)
+	label, err := database.GetLabel(userID.(int64), db)
 	if err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return

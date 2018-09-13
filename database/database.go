@@ -3,6 +3,9 @@ package database
 import (
 	"database/sql"
 	"fmt"
+
+	// blank importing postgres driver
+	_ "github.com/lib/pq"
 )
 
 // ConnectionInfo wraps all the needed information for establishing connection with PostgresSQL.
