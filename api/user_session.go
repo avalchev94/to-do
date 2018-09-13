@@ -23,10 +23,9 @@ func GetSessionUser(uuid string) (int64, error) {
 	if result.Err() != nil {
 		return -1, result.Err()
 	}
-
 	id, err := result.Int64()
 	if err != nil {
-		return 1, err
+		return -1, err
 	}
 
 	return id, nil

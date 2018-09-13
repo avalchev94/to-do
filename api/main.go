@@ -47,9 +47,10 @@ func main() {
 	}
 	defer RedisConn.Close()
 
-	http.HandleFunc("/register", handleRegister)
 	http.HandleFunc("/login", handleLogin)
 	http.HandleFunc("/user/", handleUser)
+	http.HandleFunc("/task/", handleTask)
+	http.HandleFunc("/label/", handleLabel)
 
 	if err = http.ListenAndServe(*addr, nil); err != nil {
 		log.Fatalln(err)

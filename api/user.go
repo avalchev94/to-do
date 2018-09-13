@@ -35,11 +35,7 @@ func (u *User) OK() error {
 }
 
 func (u *User) scan(row *sql.Row) error {
-	err := row.Scan(&u.ID, &u.Name, &u.Password, &u.Email, &u.Avatar, &u.Created)
-	if err == sql.ErrNoRows {
-		return errors.New("no such user")
-	}
-	return err
+	return row.Scan(&u.ID, &u.Name, &u.Password, &u.Email, &u.Avatar, &u.Created)
 }
 
 func (u *User) notExists(db *sql.DB) error {

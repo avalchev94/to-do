@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -49,14 +50,37 @@ func respondErr(w http.ResponseWriter, r *http.Request, err error, code int) {
 	}
 }
 
-func pathParams(r *http.Request, pattern string) map[string]string {
-	params := map[string]string{}
+func parseParameters(r *http.Request, pattern string) map[string]interface{} {
+	params := make(map[string]interface{})
 	pathSegs := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
 	for i, seg := range strings.Split(strings.Trim(pattern, "/"), "/") {
 		if i > len(pathSegs)-1 {
 			return params
 		}
-		params[seg] = pathSegs[i]
+
+		pair := strings.Split(seg, ":")
+		if len(pair) < 2 {
+			pair = append([]string{"string"}, pair...)
+		}
+
+		switch pair[0] {
+		case "int64":
+			int, err := strconv.ParseInt(pathSegs[i], 10, 64)
+			if err != nil {
+				continue
+			}
+			params[pair[1]] = int
+		default:
+			params[pair[1]] = pathSegs[i]
+		}
 	}
 	return params
+}
+
+func getCurrentUserID(r *http.Request) (int64, error) {
+	cookie, err := r.Cookie(AuthCookie)
+	if err != nil {
+		return 0, err
+	}
+	return GetSessionUser(cookie.Value)
 }
