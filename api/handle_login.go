@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+
+	"github.com/avalchev94/to-do-app/database"
 )
 
 const (
@@ -29,7 +31,7 @@ func handleLoginGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := GetUser(userID, DB)
+	user, err := database.GetUser(userID, DB)
 	if err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
@@ -51,7 +53,7 @@ func handleLoginPost(w http.ResponseWriter, r *http.Request) {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
 	}
-	user, err := VerifyLoginData(loginData.Name, loginData.Password, DB)
+	user, err := database.VerifyLogin(loginData.Name, loginData.Password, DB)
 	if err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return

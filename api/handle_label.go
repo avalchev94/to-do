@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+
+	"github.com/avalchev94/to-do-app/database"
 )
 
 func handleLabel(w http.ResponseWriter, r *http.Request) {
@@ -20,7 +22,7 @@ func handleLabel(w http.ResponseWriter, r *http.Request) {
 }
 
 func handlePostLabel(w http.ResponseWriter, r *http.Request) {
-	var label Label
+	var label database.Label
 	if err := json.NewDecoder(r.Body).Decode(&label); err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
@@ -52,7 +54,7 @@ func handleGetLabel(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	label, err := GetLabel(userID.(int64), DB)
+	label, err := database.GetLabel(userID.(int64), DB)
 	if err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return

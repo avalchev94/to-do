@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"database/sql"
@@ -71,7 +71,7 @@ func GetTask(taskID int64, db *sql.DB) (*Task, error) {
 	if err != nil {
 		return nil, err
 	}
-	t.getLabels(DB)
+	t.getLabels(db)
 
 	return &t, nil
 }
@@ -94,7 +94,7 @@ func GetTasks(userID int64, db *sql.DB) ([]*Task, error) {
 
 	// get the labels for each task
 	for _, task := range tasks {
-		task.getLabels(DB)
+		task.getLabels(db)
 	}
 
 	return tasks, nil

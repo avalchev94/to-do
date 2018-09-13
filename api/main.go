@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/avalchev94/to-do-app/database"
 	"github.com/go-redis/redis"
 	// usign postgres driver
 	_ "github.com/lib/pq"
@@ -24,7 +25,7 @@ func main() {
 
 	// Establish PostgresSQL connection
 	var err error
-	DB, err = ConnectDB(ConnectionInfo{
+	DB, err = database.Connect(database.ConnectionInfo{
 		Host:     os.Getenv("PG_HOST"),
 		Port:     os.Getenv("PG_PORT"),
 		User:     os.Getenv("PG_USER"),

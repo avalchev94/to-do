@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"database/sql"
@@ -19,7 +19,7 @@ func (conn *ConnectionInfo) connectionString() string {
 		conn.Host, conn.Port, conn.User, conn.Password, conn.DBName)
 }
 
-// ConnectDB establish connection with postgres database using the given connection data.
-func ConnectDB(connInfo ConnectionInfo) (*sql.DB, error) {
+// Connect establish connection with postgres database using the given connection data.
+func Connect(connInfo ConnectionInfo) (*sql.DB, error) {
 	return sql.Open("postgres", connInfo.connectionString())
 }

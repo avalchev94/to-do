@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"database/sql"
@@ -92,8 +92,8 @@ func (u *User) Add(db *sql.DB) error {
 	return err
 }
 
-// VerifyLoginData checks if there is a user with the specified name and password.
-func VerifyLoginData(name, password string, db *sql.DB) (*User, error) {
+// VerifyLogin checks if there is a user with the specified name and password.
+func VerifyLogin(name, password string, db *sql.DB) (*User, error) {
 	row := db.QueryRow("SELECT * FROM users WHERE name=$1", name)
 
 	var user User

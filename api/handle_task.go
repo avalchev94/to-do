@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+
+	"github.com/avalchev94/to-do-app/database"
 )
 
 func handleTask(w http.ResponseWriter, r *http.Request) {
@@ -20,7 +22,7 @@ func handleTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleTaskPost(w http.ResponseWriter, r *http.Request) {
-	var task Task
+	var task database.Task
 	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
@@ -51,7 +53,7 @@ func handleTaskGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	task, err := GetTask(taskID.(int64), DB)
+	task, err := database.GetTask(taskID.(int64), DB)
 	if err != nil {
 		respondErr(w, r, err, http.StatusInternalServerError)
 		return

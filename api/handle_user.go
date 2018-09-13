@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+
+	"github.com/avalchev94/to-do-app/database"
 )
 
 func handleUser(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +41,7 @@ func handleUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleUserGet(w http.ResponseWriter, r *http.Request, userID int64) {
-	user, err := GetUser(userID, DB)
+	user, err := database.GetUser(userID, DB)
 	if err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
@@ -48,7 +50,7 @@ func handleUserGet(w http.ResponseWriter, r *http.Request, userID int64) {
 }
 
 func handleUserLabelsGet(w http.ResponseWriter, r *http.Request, userID int64) {
-	labels, err := GetLabels(userID, DB)
+	labels, err := database.GetLabels(userID, DB)
 	if err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
@@ -57,7 +59,7 @@ func handleUserLabelsGet(w http.ResponseWriter, r *http.Request, userID int64) {
 }
 
 func handleUserTasksGet(w http.ResponseWriter, r *http.Request, userID int64) {
-	tasks, err := GetTasks(userID, DB)
+	tasks, err := database.GetTasks(userID, DB)
 	if err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
@@ -66,7 +68,7 @@ func handleUserTasksGet(w http.ResponseWriter, r *http.Request, userID int64) {
 }
 
 func handleUserRegister(w http.ResponseWriter, r *http.Request) {
-	var user User
+	var user database.User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
