@@ -3,9 +3,8 @@ package main
 import (
 	"flag"
 	"log"
-	"net/http"
 
-	"github.com/avalchev94/to-do-app/api"
+	"github.com/avalchev94/to-do-app"
 )
 
 func main() {
@@ -26,9 +25,7 @@ func runAPI(args []string) {
 	httpAddr := fs.String("http", ":8080", "API http address")
 	fs.Parse(args)
 
-	log.Println("Running API on", *httpAddr)
-	err := http.ListenAndServe(*httpAddr, api.Handler())
-	if err != nil {
+	if err := todoapp.RunAPI(*httpAddr); err != nil {
 		log.Fatal(err)
 	}
 }

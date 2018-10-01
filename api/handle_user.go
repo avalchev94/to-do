@@ -49,24 +49,6 @@ func handleUserGet(w http.ResponseWriter, r *http.Request, userID int64) {
 	respond(w, r, user, http.StatusOK)
 }
 
-func handleUserLabelsGet(w http.ResponseWriter, r *http.Request, userID int64) {
-	labels, err := database.GetLabels(userID, db)
-	if err != nil {
-		respondErr(w, r, err, http.StatusBadRequest)
-		return
-	}
-	respond(w, r, labels, http.StatusOK)
-}
-
-func handleUserTasksGet(w http.ResponseWriter, r *http.Request, userID int64) {
-	tasks, err := database.GetTasks(userID, db)
-	if err != nil {
-		respondErr(w, r, err, http.StatusBadRequest)
-		return
-	}
-	respond(w, r, tasks, http.StatusOK)
-}
-
 func handleUserRegister(w http.ResponseWriter, r *http.Request) {
 	var user database.User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
@@ -84,4 +66,32 @@ func handleUserRegister(w http.ResponseWriter, r *http.Request) {
 
 func handleUserDelete(w http.ResponseWriter, r *http.Request) {
 
+}
+
+func handleUserLabelsGet(w http.ResponseWriter, r *http.Request, userID int64) {
+	labels, err := database.GetLabels(userID, db)
+	if err != nil {
+		respondErr(w, r, err, http.StatusBadRequest)
+		return
+	}
+	respond(w, r, labels, http.StatusOK)
+}
+
+func handleUserTasksGet(w http.ResponseWriter, r *http.Request, userID int64) {
+	dbTasks, err := database.GetTasks(userID, db)
+	if err != nil {
+		respondErr(w, r, err, http.StatusBadRequest)
+		return
+	}
+
+	tasks := make([]Task, len(dbTasks))
+	for i, task := range dbTasks {
+		tasks[i].Task = task
+		tasks[i].Schedule, err = database.GetSchedule(task.ID, db)
+		if err != nil {
+			respondErr(w, r, err, http.StatusBadRequest)
+			return
+		}
+	}
+	respond(w, r, tasks, http.StatusOK)
 }

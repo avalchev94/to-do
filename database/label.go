@@ -3,6 +3,8 @@ package database
 import (
 	"database/sql"
 	"errors"
+
+	"github.com/avalchev94/sqlxt"
 )
 
 const (
@@ -12,7 +14,7 @@ const (
 // Label struct represents the tasks' labels.
 type Label struct {
 	ID     int64  `json:"id"`
-	UserID int64  `json:"user_id,omitempty"`
+	UserID int64  `json:"user_id,omitempty" sql:"user_id"`
 	Name   string `json:"name"`
 	Color  string `json:"color"`
 }
@@ -65,10 +67,10 @@ func (l *Label) Add(db *sql.DB) error {
 
 // GetLabel finds if there is a label with the specified id and returns it.
 func GetLabel(id int64, db *sql.DB) (*Label, error) {
-	row := db.QueryRow("SELECT * FROM labels WHERE id=$1", id)
-
 	var label Label
-	if err := row.Scan(&label.ID, &label.UserID, &label.Name, &label.Color); err != nil {
+
+	scanner := sqlxt.NewScanner(db.Query("SELECT * FROM labels WHERE id=$1", id))
+	if err := scanner.Scan(&label); err != nil {
 		return nil, err
 	}
 	return &label, nil
@@ -76,20 +78,11 @@ func GetLabel(id int64, db *sql.DB) (*Label, error) {
 
 // GetLabels finds all labels for created by a user
 func GetLabels(userID int64, db *sql.DB) ([]Label, error) {
-	rows, err := db.Query("SELECT * FROM labels WHERE user_id=$1", userID)
-	if err != nil {
+	labels := []Label{}
+
+	scanner := sqlxt.NewScanner(db.Query("SELECT * FROM labels WHERE user_id=$1", userID))
+	if err := scanner.Scan(&labels); err != nil {
 		return nil, err
-	}
-	defer rows.Close()
-
-	var labels []Label
-	for rows.Next() {
-		var label Label
-
-		if err := rows.Scan(&label.ID, &label.UserID, &label.Name, &label.Color); err != nil {
-			return nil, err
-		}
-		labels = append(labels, label)
 	}
 	return labels, nil
 }

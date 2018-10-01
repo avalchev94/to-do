@@ -6,17 +6,19 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/avalchev94/sqlxt"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
 // User struct describes the user information saved in the database.
 type User struct {
-	ID       int64     `json:"id"`
-	Name     string    `json:"name"`
-	Password string    `json:"password,omitempty"`
-	Email    string    `json:"email"`
-	Avatar   string    `json:"avatar,omitempty"`
-	Created  time.Time `json:"created"`
+	ID       int64     `json:"id" sql:"id"`
+	Name     string    `json:"name" sql:"name"`
+	Password string    `json:"password,omitempty" sql:"password"`
+	Email    string    `json:"email" sql:"email"`
+	Avatar   string    `json:"avatar,omitempty" sql:"avatar"`
+	Created  time.Time `json:"created" sql:"created"`
 }
 
 // OK validates the user data fields.
@@ -34,24 +36,12 @@ func (u *User) OK() error {
 	return nil
 }
 
-func (u *User) scan(row *sql.Row) error {
-	return row.Scan(&u.ID, &u.Name, &u.Password, &u.Email, &u.Avatar, &u.Created)
-}
-
 func (u *User) notExists(db *sql.DB) error {
 	rows, err := db.Query("SELECT name, email FROM users WHERE email=$1 OR name=$2", u.Email, u.Name)
-	if err != nil {
-		return err
-	}
-	defer rows.Close()
 
 	var users []User
-	for rows.Next() {
-		var user User
-		if err = rows.Scan(&user.Name, &user.Email); err != nil {
-			return err
-		}
-		users = append(users, user)
+	if err = sqlxt.NewScanner(rows, err).Scan(&users); err != nil {
+		return err
 	}
 
 	if len(users) == 1 {
@@ -94,10 +84,10 @@ func (u *User) Add(db *sql.DB) error {
 
 // VerifyLogin checks if there is a user with the specified name and password.
 func VerifyLogin(name, password string, db *sql.DB) (*User, error) {
-	row := db.QueryRow("SELECT * FROM users WHERE name=$1", name)
+	rows, err := db.Query("SELECT * FROM users WHERE name=$1", name)
 
 	var user User
-	if err := user.scan(row); err != nil {
+	if err = sqlxt.NewScanner(rows, err).Scan(&user); err != nil {
 		return nil, err
 	}
 
@@ -112,10 +102,10 @@ func VerifyLogin(name, password string, db *sql.DB) (*User, error) {
 
 // GetUser finds if there is a user with the specified id and returns it.
 func GetUser(id int64, db *sql.DB) (*User, error) {
-	row := db.QueryRow("SELECT * FROM users WHERE id=$1", id)
+	rows, err := db.Query("SELECT * FROM users WHERE id=$1", id)
 
 	var user User
-	if err := user.scan(row); err != nil {
+	if err := sqlxt.NewScanner(rows, err).Scan(&user); err != nil {
 		return nil, err
 	}
 

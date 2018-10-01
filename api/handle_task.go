@@ -21,26 +21,29 @@ func handleTask(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+type Task struct {
+	Task     *database.Task         `json:"task"`
+	Schedule *database.TaskSchedule `json:"schedule"`
+}
+
 func handleTaskPost(w http.ResponseWriter, r *http.Request) {
-	var task database.Task
-	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
+	var t Task
+	if err := json.NewDecoder(r.Body).Decode(&t); err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
 	}
 
-	// Get current logged user
-	userID, err := getCurrentUserID(r)
+	var err error
+	t.Task.UserID, err = getCurrentUserID(r)
 	if err != nil {
 		respondErr(w, r, errors.New("no logged user"), http.StatusBadRequest)
 		return
 	}
-	task.UserID = userID
 
-	if err := task.Add(db); err != nil {
+	if err := database.AddTask(t.Task, t.Schedule, db); err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
 	}
-
 	respond(w, r, nil, http.StatusCreated)
 }
 
@@ -53,14 +56,14 @@ func handleTaskGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	task, err := database.GetTask(taskID.(int64), db)
+	task, schedule, err := database.GetTaskAndSchedule(taskID.(int64), db)
 	if err != nil {
-		respondErr(w, r, err, http.StatusInternalServerError)
+		respondErr(w, r, err, http.StatusBadRequest)
 		return
 	}
-	respond(w, r, task, http.StatusOK)
+
+	respond(w, r, Task{task, schedule}, http.StatusOK)
 }
 
 func handleTaskDelete(w http.ResponseWriter, r *http.Request) {
-
 }

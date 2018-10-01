@@ -45,6 +45,7 @@ func Handler() *http.ServeMux {
 	mux.HandleFunc("/user/", handleUser)
 	mux.HandleFunc("/task/", handleTask)
 	mux.HandleFunc("/label/", handleLabel)
+	mux.HandleFunc("/repetitive_task/", handleRepetitiveTask)
 
 	return mux
 }
