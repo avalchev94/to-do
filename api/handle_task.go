@@ -21,26 +21,21 @@ func handleTask(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-type Task struct {
-	Task     *database.Task         `json:"task"`
-	Schedule *database.TaskSchedule `json:"schedule"`
-}
-
 func handleTaskPost(w http.ResponseWriter, r *http.Request) {
-	var t Task
-	if err := json.NewDecoder(r.Body).Decode(&t); err != nil {
+	var task database.ScheduledTask
+	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
 	}
 
 	var err error
-	t.Task.UserID, err = getCurrentUserID(r)
+	task.Task.UserID, err = getCurrentUserID(r)
 	if err != nil {
 		respondErr(w, r, errors.New("no logged user"), http.StatusBadRequest)
 		return
 	}
 
-	if err := database.AddTask(t.Task, t.Schedule, db); err != nil {
+	if err := task.Add(db); err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
 	}
@@ -56,13 +51,13 @@ func handleTaskGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	task, schedule, err := database.GetTaskAndSchedule(taskID.(int64), db)
+	task, err := database.GetScheduledTask(taskID.(int64), db)
 	if err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
 	}
 
-	respond(w, r, Task{task, schedule}, http.StatusOK)
+	respond(w, r, task, http.StatusOK)
 }
 
 func handleTaskDelete(w http.ResponseWriter, r *http.Request) {

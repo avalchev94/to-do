@@ -78,20 +78,10 @@ func handleUserLabelsGet(w http.ResponseWriter, r *http.Request, userID int64) {
 }
 
 func handleUserTasksGet(w http.ResponseWriter, r *http.Request, userID int64) {
-	dbTasks, err := database.GetTasks(userID, db)
+	tasks, err := database.GetScheduledTasks(userID, db)
 	if err != nil {
 		respondErr(w, r, err, http.StatusBadRequest)
 		return
-	}
-
-	tasks := make([]Task, len(dbTasks))
-	for i, task := range dbTasks {
-		tasks[i].Task = task
-		tasks[i].Schedule, err = database.GetSchedule(task.ID, db)
-		if err != nil {
-			respondErr(w, r, err, http.StatusBadRequest)
-			return
-		}
 	}
 	respond(w, r, tasks, http.StatusOK)
 }

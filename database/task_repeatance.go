@@ -7,6 +7,7 @@ import (
 	"github.com/lib/pq"
 
 	"github.com/avalchev94/sqlxt"
+	"github.com/rickb777/date"
 	"github.com/rickb777/date/clock"
 )
 
@@ -22,11 +23,12 @@ func (rt RepeatType) OK() bool {
 }
 
 type TaskRepeatance struct {
-	ID     int64       `json:"id,omitempty"`
-	TaskID int64       `json:"task_id,omitempty" sql:"task_id"`
-	Type   RepeatType  `json:"type"`
-	Days   []int64     `json:"days"`
-	Hour   clock.Clock `json:"hour"`
+	ID           int64       `json:"id,omitempty"`
+	TaskID       int64       `json:"task_id,omitempty" sql:"task_id"`
+	Type         RepeatType  `json:"type"`
+	Days         []int64     `json:"days"`
+	Hour         clock.Clock `json:"hour"`
+	LastRepeated *date.Date  `json:"last_repeated,omitempty" sql:"last_repeated"`
 }
 
 func (tr *TaskRepeatance) OK() error {
@@ -49,12 +51,12 @@ func (tr *TaskRepeatance) add(tx *sql.Tx) error {
 	}
 	row := tx.QueryRow(`INSERT INTO task_repeatance (task_id,type,days,hour)
 											VALUES ($1,$2,$3,$4) RETURNING id`,
-		tr.TaskID, tr.Type, pq.Array(tr.Days), tr.Hour.HhMmSs())
+		tr.TaskID, tr.Type, pq.Array(tr.Days), tr.Hour.HhMm())
 
 	return row.Scan(&tr.ID)
 }
 
-func GetTaskRepeatance(taskID int64, db *sql.DB) (*TaskRepeatance, error) {
+func GetRepeatance(taskID int64, db *sql.DB) (*TaskRepeatance, error) {
 	row, query := db.Query("SELECT * FROM task_repeatance WHERE id=$1", taskID)
 
 	var repeatance TaskRepeatance
@@ -62,20 +64,4 @@ func GetTaskRepeatance(taskID int64, db *sql.DB) (*TaskRepeatance, error) {
 		return nil, err
 	}
 	return &repeatance, nil
-}
-
-func GetTaskAndRepeatance(taskID int64, db *sql.DB) (*Task, *TaskRepeatance, error) {
-	query := `SELECT t.*, r.type, r.days, r.hour
-						FROM tasks AS t
-						JOIN task_repeatance AS r ON t.id=r.task_id
-						WHERE t.id=$1`
-	task := struct {
-		Task       Task
-		Repeatance TaskRepeatance
-	}{}
-	if err := sqlxt.NewScanner(db.Query(query, taskID)).Scan(&task); err != nil {
-		return nil, nil, err
-	}
-
-	return &task.Task, &task.Repeatance, task.Task.getLabels(db)
 }

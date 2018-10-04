@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/avalchev94/sqlxt"
-
 	"golang.org/x/crypto/bcrypt"
 )
 

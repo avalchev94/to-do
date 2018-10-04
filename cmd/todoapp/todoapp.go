@@ -23,7 +23,12 @@ func main() {
 func runAPI(args []string) {
 	fs := flag.NewFlagSet("API", flag.ContinueOnError)
 	httpAddr := fs.String("http", ":8080", "API http address")
+	threads := fs.Int("threads", 10, "Threads used for repetitive task creation")
 	fs.Parse(args)
+
+	if err := todoapp.RunTaskRepeater(*threads); err != nil {
+		log.Fatal(err)
+	}
 
 	if err := todoapp.RunAPI(*httpAddr); err != nil {
 		log.Fatal(err)

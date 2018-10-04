@@ -54,42 +54,6 @@ func (t *Task) getLabels(db *sql.DB) error {
 	return err
 }
 
-func AddTask(task *Task, schedule *TaskSchedule, db *sql.DB) error {
-	transaction, err := db.Begin()
-	if err != nil {
-		return err
-	}
-
-	if err := task.add(transaction); err != nil {
-		return transaction.Rollback()
-	}
-
-	schedule.TaskID = task.ID
-	if err := schedule.add(transaction); err != nil {
-		return transaction.Rollback()
-	}
-
-	return transaction.Commit()
-}
-
-func AddRepetitiveTask(task *Task, repeatance *TaskRepeatance, db *sql.DB) error {
-	transaction, err := db.Begin()
-	if err != nil {
-		return err
-	}
-
-	if err := task.add(transaction); err != nil {
-		return transaction.Rollback()
-	}
-
-	repeatance.TaskID = task.ID
-	if err := repeatance.add(transaction); err != nil {
-		return transaction.Rollback()
-	}
-
-	return transaction.Commit()
-}
-
 // GetTask searches for task with the specified id
 func GetTask(taskID int64, db *sql.DB) (*Task, error) {
 	var t Task
@@ -100,23 +64,4 @@ func GetTask(taskID int64, db *sql.DB) (*Task, error) {
 	}
 
 	return &t, t.getLabels(db)
-}
-
-// GetTasks returns all the tasks for some user.
-func GetTasks(userID int64, db *sql.DB) ([]*Task, error) {
-	var tasks []*Task
-
-	rows, err := db.Query("SELECT * FROM tasks WHERE user_id=$1", userID)
-	if err := sqlxt.NewScanner(rows, err).Scan(&tasks); err != nil {
-		return nil, err
-	}
-
-	// get the labels for each task
-	for _, task := range tasks {
-		if err := task.getLabels(db); err != nil {
-			return tasks, err
-		}
-	}
-
-	return tasks, nil
 }

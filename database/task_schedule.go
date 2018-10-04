@@ -59,36 +59,11 @@ func (ts *TaskSchedule) add(tx *sql.Tx) error {
 }
 
 func GetSchedule(taskID int64, db *sql.DB) (*TaskSchedule, error) {
-	schedules, err := GetSchedules(taskID, db)
-	if err != nil {
-		return nil, err
-	}
-	return schedules[0], nil
-}
-
-func GetSchedules(taskID int64, db *sql.DB) ([]*TaskSchedule, error) {
 	query := "SELECT type, date, time, created, finished FROM task_schedule WHERE task_id=$1"
 
-	var schedules []*TaskSchedule
-	if err := sqlxt.NewScanner(db.Query(query, taskID)).Scan(&schedules); err != nil {
+	var schedule TaskSchedule
+	if err := sqlxt.NewScanner(db.Query(query, taskID)).Scan(&schedule); err != nil {
 		return nil, err
 	}
-	return schedules, nil
-}
-
-func GetTaskAndSchedule(taskID int64, db *sql.DB) (*Task, *TaskSchedule, error) {
-	query := `SELECT t.*, s.type, s.date, s.time, s.created, s.finished
-						FROM tasks AS t
-						JOIN task_schedule AS s ON t.id = s.task_id
-						WHERE t.id = $1`
-
-	task := struct {
-		Task     Task
-		Schedule TaskSchedule
-	}{}
-	if err := sqlxt.NewScanner(db.Query(query, taskID)).Scan(&task); err != nil {
-		return nil, nil, err
-	}
-
-	return &task.Task, &task.Schedule, task.Task.getLabels(db)
+	return &schedule, nil
 }
