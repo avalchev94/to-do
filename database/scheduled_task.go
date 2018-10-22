@@ -28,11 +28,17 @@ func (t *ScheduledTask) Add(db *sql.DB) error {
 	}
 
 	if err := t.Task.add(transaction); err != nil {
-		return transaction.Rollback()
+		if terr := transaction.Rollback(); terr != nil {
+			return terr
+		}
+		return err
 	}
 
 	t.Schedule.TaskID = t.Task.ID
 	if err := t.Schedule.add(transaction); err != nil {
+		if terr := transaction.Rollback(); terr != nil {
+			return terr
+		}
 		return transaction.Rollback()
 	}
 

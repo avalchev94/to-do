@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/avalchev94/sqlxt"
@@ -20,17 +19,25 @@ type User struct {
 	Created  time.Time `json:"created" sql:"created"`
 }
 
+var (
+	UsernameShort = errors.New("db: short username")
+	PasswordShort = errors.New("db: short password")
+	EmailInvalid  = errors.New("db: email is invalid")
+	EmailUsed     = errors.New("db: email is already used")
+	UsernameUsed  = errors.New("db: username is already used")
+)
+
 // OK validates the user data fields.
 func (u *User) OK() error {
 	if len(u.Name) <= 5 {
-		return errors.New("username is too short")
+		return UsernameShort
 	}
 	if len(u.Password) <= 5 {
-		return errors.New("password is too short")
+		return PasswordShort
 	}
 	// TODO Add regular expression.
 	if len(u.Email) <= 5 {
-		return errors.New("email address not valid")
+		return EmailInvalid
 	}
 	return nil
 }
@@ -43,18 +50,14 @@ func (u *User) notExists(db *sql.DB) error {
 		return err
 	}
 
-	if len(users) == 1 {
-		if users[0].Email == u.Email {
-			return fmt.Errorf("email is already used")
-		}
-		// if we have len(users) == 1 and it is not the email, it SHOULD be the name
-		return fmt.Errorf("username is already used")
-	}
-	if len(users) > 1 {
-		return fmt.Errorf("email and username are already used")
+	if len(users) == 0 {
+		return nil
 	}
 
-	return nil
+	if users[0].Name == u.Name {
+		return UsernameUsed
+	}
+	return EmailUsed
 }
 
 // Add creates a user in the database.

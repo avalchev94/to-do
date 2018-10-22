@@ -35,12 +35,17 @@ type TaskSchedule struct {
 	Finished *time.Time   `json:"finished,omitempty"`
 }
 
+var (
+	InvalidTask         = errors.New("db: invalid task_id")
+	InvalidScheduleType = errors.New("db: invalid schedule type")
+)
+
 func (ts *TaskSchedule) OK() error {
 	switch {
 	case ts.TaskID <= 0:
-		return errors.New("incorrect task id")
+		return InvalidTask
 	case !ts.Type.OK():
-		return errors.New("invalid type")
+		return InvalidScheduleType
 	}
 	return nil
 }
@@ -53,7 +58,7 @@ func (ts *TaskSchedule) add(tx *sql.Tx) error {
 	//TODO: check if the task is already scheduled?
 	row := tx.QueryRow(`INSERT INTO task_schedule (task_id,type,date,time,created,finished)
 											VALUES($1,$2,$3,$4,$5,$6) RETURNING id`,
-		ts.TaskID, ts.Type, ts.Date, ts.Time, ts.Created, ts.Finished)
+		ts.TaskID, ts.Type, ts.Date.String(), ts.Time.HhMmSs(), ts.Created, ts.Finished)
 
 	return row.Scan(&ts.ID)
 }

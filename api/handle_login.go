@@ -2,45 +2,24 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	"github.com/avalchev94/to-do-app/database"
+	"github.com/gin-gonic/gin"
 )
 
-const (
-	authCookie = "AuthCookie"
-)
-
-func handleLogin(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "GET":
-		handleLoginGet(w, r)
-	case "POST":
-		handleLoginPost(w, r)
-	default:
-		w.WriteHeader(http.StatusMethodNotAllowed)
-	}
-}
-
-func handleLoginGet(w http.ResponseWriter, r *http.Request) {
-	userID, err := getCurrentUserID(r)
-	if err != nil {
-		respondErr(w, r, errors.New("no logged user"), http.StatusBadRequest)
+func getLogin(ctx *gin.Context) {
+	user, ok := ctx.Get("user")
+	if !ok {
+		ctx.Status(http.StatusInternalServerError)
 		return
 	}
-
-	user, err := database.GetUser(userID, db)
-	if err != nil {
-		respondErr(w, r, err, http.StatusBadRequest)
-		return
-	}
-	respond(w, r, user, http.StatusOK)
+	ctx.JSON(http.StatusOK, user)
 }
 
-func handleLoginPost(w http.ResponseWriter, r *http.Request) {
-	if _, err := getCurrentUserID(r); err == nil {
-		respondErr(w, r, errors.New("already logged"), http.StatusBadRequest)
+func postLogin(ctx *gin.Context) {
+	if _, err := auth.Logged(ctx); err == nil {
+		ctx.JSON(http.StatusBadRequest, AlreardyAuth)
 		return
 	}
 
@@ -48,24 +27,30 @@ func handleLoginPost(w http.ResponseWriter, r *http.Request) {
 		Name     string `json:"name"`
 		Password string `json:"password"`
 	}{}
-	if err := json.NewDecoder(r.Body).Decode(&loginData); err != nil {
-		respondErr(w, r, err, http.StatusBadRequest)
-		return
-	}
-	user, err := database.VerifyLogin(loginData.Name, loginData.Password, db)
-	if err != nil {
-		respondErr(w, r, err, http.StatusBadRequest)
+	if err := json.NewDecoder(ctx.Request.Body).Decode(&loginData); err != nil {
+		ctx.JSON(http.StatusBadRequest, NewError(err))
 		return
 	}
 
-	uuid, err := newLoginSession(user.ID)
+	user, err := database.VerifyLogin(loginData.Name, loginData.Password, db)
 	if err != nil {
-		respondErr(w, r, err, http.StatusInternalServerError)
+		ctx.JSON(http.StatusBadRequest, NewError(err))
 		return
 	}
-	http.SetCookie(w, &http.Cookie{
-		Name:  authCookie,
-		Value: uuid,
-	})
-	respond(w, r, nil, http.StatusOK)
+
+	if err := auth.Login(user.ID, ctx); err != nil {
+		ctx.Status(http.StatusInternalServerError)
+		ctx.Error(err)
+		return
+	}
+
+	ctx.Status(http.StatusOK)
+}
+
+func logout(ctx *gin.Context) {
+	if err := auth.Logout(ctx); err != nil {
+		ctx.JSON(http.StatusBadRequest, NewError(err))
+		return
+	}
+	ctx.Status(http.StatusOK)
 }

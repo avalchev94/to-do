@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{{.Title}}</title>
+  <link rel="stylesheet" type="text/css" media="screen" href="static/css/main.css"/>
+  <link href="https://fonts.googleapis.com/css?family=Do+Hyeon" rel="stylesheet"> 
+  <script src="static/js/jquery-3.3.1.min.js"></script>
+  <script src="static/js/main.js"></script>
+</head>
+<body>
+  <div class="top-bar">
+    <div class="logo">
+      <span>Todo App</span>
+    </div>
+    <div class="search">
+      <input type="text" class="field">
+    </div>
+    <div class="menu">
+      <a href="#" class="icon add"></a>
+      <a href="#" class="icon bell"></a>
+      <a href="#" class="icon settings"></a>
+    </div>
+  </div>
+  <div class="content">
+    <div class="left" id="left-bar">
+      <div class="top-menu">
+        <a href="/dash"><div class="icon dash"></div><span>dashboard</span></a>
+        <a href="/calendar"><div class="icon calendar"></div><span>calendar</span></a>
+        <a href="/productivity"><div class="icon pulse"></div><span>productivity</span></a>
+      </div>
+      <div class="bottom-menu">
+        <a href="#"><div class="icon report"></div><span>report</span></a>
+        <a href="#" id="menu-toggle"><div class="icon bars"></div><span>hide</span></a>
+      </div>
+    </div>
+    <div class="right">
+    {{if .Dashboard}}
+      {{template "dashboard"}}
+    {{end}}
+    </div>
+  </div>
+</body>
+</html>

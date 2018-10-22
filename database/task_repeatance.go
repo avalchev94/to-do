@@ -2,7 +2,7 @@ package database
 
 import (
 	"database/sql"
-	"fmt"
+	"errors"
 
 	"github.com/lib/pq"
 
@@ -31,16 +31,22 @@ type TaskRepeatance struct {
 	LastRepeated *date.Date  `json:"last_repeated,omitempty" sql:"last_repeated"`
 }
 
+var (
+	InvalidRepeatType = errors.New("db: invalid repeat type")
+	EmptyDays         = errors.New("db: days can't be empty")
+	EmptyHour         = errors.New("db: hour can't be empty")
+)
+
 func (tr *TaskRepeatance) OK() error {
 	switch {
 	case tr.TaskID <= 0:
-		return fmt.Errorf("TaskID is invalid")
+		return InvalidTask
 	case !tr.Type.OK():
-		return fmt.Errorf("Type is invalid")
+		return InvalidRepeatType
 	case len(tr.Days) == 0:
-		return fmt.Errorf("Days is empty")
+		return EmptyDays
 	case tr.Hour.String() == "":
-		return fmt.Errorf("Hour is empty")
+		return EmptyHour
 	}
 	return nil
 }

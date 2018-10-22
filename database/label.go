@@ -24,16 +24,20 @@ func isHexColor(color string) bool {
 	return len(color) == 6
 }
 
+var (
+	EmptyLabelName    = errors.New("db: name can't be empty")
+	InvalidLabelColor = errors.New("db: invalid color")
+)
+
 // OK validates the label data fields.
 func (l *Label) OK() error {
-	if l.UserID <= 0 {
-		return errors.New("invalid userID input")
-	}
-	if l.Name == "" {
-		return errors.New("label name is empty")
-	}
-	if !isHexColor(l.Color) {
-		return errors.New("incorrect label color")
+	switch {
+	case l.UserID <= 0:
+		return InvalidUser
+	case l.Name == "":
+		return EmptyLabelName
+	case !isHexColor(l.Color):
+		return InvalidLabelColor
 	}
 	return nil
 }

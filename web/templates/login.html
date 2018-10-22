@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Login</title>
+</head>
+<body>
+  <form action="/login" method="post">
+    <p>
+      <label for="username">Username:</label>
+      <input type="text" name="username" required>
+    </p>
+    <p>
+      <label for="password">Password:</label>
+      <input type="password" name="password" required>
+    </p>
+    <button type="submit">Login</button>
+  </form>
+  {{.Error}}
+</body>
+</html>

@@ -1,0 +1,47 @@
+{{define "task"}}
+<div class="task">
+  <div class="title">{{index . "title"}}</div>
+  <div class="description">{{index . "body"}}</div>
+            {{with index . "labels"}}
+           <p class="label-name">{{index . "title"}}</p>
+          {{end}}
+  {{if index . "labels"}}
+  <div class="labels-container">
+    {{with index . "labels"}}
+    <div class="label" style='background-color:{{index . "color"}} color: #fff'>
+      <span>{{index . "title"}}</span>
+    </div>
+    {{end}}
+  </div>
+  {{end}}
+  {{if index . "schedule"}}
+  <div class="schedule">
+    {{if index . "date"}}
+      <div class="date"><span>{{index . "date"}}</span></div>
+    {{end}}
+    {{if index . "time"}}
+      <div class="time"><span>{{index . "time"}}</span></div>
+    {{end}}
+  </div>
+  {{end}}
+</div>
+{{end}}
+
+{{define "board"}}
+<div class="board">
+  <div class="heading">
+    <div class="text">{{index . "title"}}</div> 
+    <a href="#"><div class="icon"></div></a>
+  </div>
+  {{range index . "tasks"}}
+  {{end}}
+</div>
+{{end}}
+
+{{define "dashboard"}}
+<div class="dashboard">
+  {{range .Boards}}
+    {{template "board"}}
+  {{end}}
+</div>
+{{end}}

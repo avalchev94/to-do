@@ -18,13 +18,18 @@ type Task struct {
 	LabelsID []int64 `json:"labels_id,omitempty" sql:"labels"`
 }
 
+var (
+	InvalidUser = errors.New("db: invalid user_id")
+	EmptyBody   = errors.New("db: body can't be empty")
+)
+
 // OK validates the task fields.
 func (t *Task) OK() error {
-	if t.UserID <= 0 {
-		return errors.New("UserID is incorrect")
-	}
-	if len(t.Body) == 0 {
-		return errors.New("task body can't be empty")
+	switch {
+	case t.UserID <= 0:
+		return InvalidUser
+	case len(t.Body) == 0:
+		return EmptyBody
 	}
 	return nil
 }
