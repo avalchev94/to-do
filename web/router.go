@@ -23,15 +23,13 @@ func Router(apiAddr string) *gin.Engine {
 	router = gin.Default()
 	router.LoadHTMLGlob(templatesPattern())
 	router.Static("/static", staticFolder())
-	//router.GET("/", func(ctx *gin.Context) {
-	//	ctx.String(200, "Todo App")
-	//})
-	////router.GET("/tasks", handleTasks)
-	//router.POST("/task", blabla)
+
 	router.GET("/dash", dashboard)
 	router.GET("/login", getLogin)
 	router.POST("/login", postLogin)
 	router.GET("/logout", logout)
+	router.POST("/task", postTask)
+	router.GET("/labels", getLabels)
 
 	return router
 }

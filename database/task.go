@@ -10,12 +10,11 @@ import (
 
 // Task represent a single task that a user can add
 type Task struct {
-	ID       int64   `json:"id"`
-	UserID   int64   `json:"user_id" sql:"user_id"`
-	Title    string  `json:"title,omitempty"`
-	Body     string  `json:"body"`
-	Labels   []Label `json:"labels,omitempty" sql:"-"`
-	LabelsID []int64 `json:"labels_id,omitempty" sql:"labels"`
+	ID     int64  `json:"id"`
+	UserID int64  `json:"user_id" sql:"user_id"`
+	Title  string `json:"title,omitempty"`
+	Body   string `json:"body"`
+	Labels Labels `json:"labels,omitempty" sql:"labels"`
 }
 
 var (
@@ -40,23 +39,9 @@ func (t *Task) add(tx *sql.Tx) error {
 	}
 
 	row := tx.QueryRow("INSERT INTO tasks (user_id, title, body, labels) VALUES($1,$2,$3,$4) RETURNING id",
-		t.UserID, t.Title, t.Body, pq.Array(t.LabelsID))
+		t.UserID, t.Title, t.Body, pq.Array(t.Labels))
 
 	return row.Scan(&t.ID)
-}
-
-func (t *Task) getLabels(db *sql.DB) error {
-	if len(t.LabelsID) == 0 {
-		return nil
-	}
-
-	rows, err := db.Query("SELECT id, name, color FROM labels WHERE id=ANY($1)", pq.Array(t.LabelsID))
-	err = sqlxt.NewScanner(rows, err).Scan(&t.Labels)
-	if err == nil {
-		// id duplication after successful query
-		t.LabelsID = nil
-	}
-	return err
 }
 
 // GetTask searches for task with the specified id
@@ -68,5 +53,5 @@ func GetTask(taskID int64, db *sql.DB) (*Task, error) {
 		return nil, err
 	}
 
-	return &t, t.getLabels(db)
+	return &t, nil
 }

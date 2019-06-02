@@ -3,11 +3,11 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"time"
 
 	"github.com/lib/pq"
 
 	"github.com/avalchev94/sqlxt"
-	"github.com/rickb777/date"
 	"github.com/rickb777/date/clock"
 )
 
@@ -28,7 +28,7 @@ type TaskRepeatance struct {
 	Type         RepeatType  `json:"type"`
 	Days         []int64     `json:"days"`
 	Hour         clock.Clock `json:"hour"`
-	LastRepeated *date.Date  `json:"last_repeated,omitempty" sql:"last_repeated"`
+	LastRepeated *time.Time  `json:"last_repeated,omitempty" sql:"last_repeated"`
 }
 
 var (

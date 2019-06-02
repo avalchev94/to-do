@@ -34,6 +34,13 @@ func (t *ScheduledTask) Add(db *sql.DB) error {
 		return err
 	}
 
+	if err := t.Task.Labels.add(t.Task.UserID, transaction); err != nil {
+		if terr := transaction.Rollback(); terr != nil {
+			return terr
+		}
+		return err
+	}
+
 	t.Schedule.TaskID = t.Task.ID
 	if err := t.Schedule.add(transaction); err != nil {
 		if terr := transaction.Rollback(); terr != nil {
@@ -68,14 +75,23 @@ func GetScheduledTask(taskID int64, db *sql.DB) (*ScheduledTask, error) {
 		return nil, err
 	}
 
-	return &task, task.Task.getLabels(db)
+	return &task, nil
 }
 
-func GetScheduledTasks(userID int64, db *sql.DB) ([]*ScheduledTask, error) {
+func GetScheduledTasks(userID int64, params Parameters, db *sql.DB) ([]*ScheduledTask, error) {
 	query := `SELECT t.*, s.type, s.date, s.time, s.created, s.finished
 	FROM tasks AS t
 	JOIN task_schedule AS s ON t.id = s.task_id
 	WHERE t.user_id = $1`
+
+	if params != nil {
+		if where := params.encodeSQL(map[string]string{
+			"task_schedule": "s",
+			"tasks":         "t",
+		}); where != "" {
+			query += " AND " + where
+		}
+	}
 
 	var tasks []*ScheduledTask
 	if err := sqlxt.NewScanner(db.Query(query, userID)).Scan(&tasks); err != nil {

@@ -13,7 +13,7 @@ import (
 func getID(ctx *gin.Context) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, IncorrectParameter)
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, IncorrectParameter)
 		return
 	}
 	ctx.Set("id", id)
@@ -23,7 +23,7 @@ func getID(ctx *gin.Context) {
 func getLogged(ctx *gin.Context) {
 	userID, err := auth.Logged(ctx)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, Unauthorized)
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, Unauthorized)
 		return
 	}
 
@@ -31,9 +31,9 @@ func getLogged(ctx *gin.Context) {
 	if err != nil {
 		switch auth.Logout(ctx) {
 		case nil:
-			ctx.JSON(http.StatusUnauthorized, Unauthorized)
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, Unauthorized)
 		default:
-			ctx.JSON(http.StatusInternalServerError, nil)
+			ctx.AbortWithError(http.StatusInternalServerError, nil)
 		}
 		return
 	}

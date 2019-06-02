@@ -76,10 +76,9 @@ func (u *User) Add(db *sql.DB) error {
 		return err
 	}
 	u.Password = string(hash)
-	u.Created = time.Now()
 
-	_, err = db.Exec("INSERT INTO users (name, password, email, avatar, created) VALUES($1,$2,$3,$4,$5)",
-		u.Name, u.Password, u.Email, u.Avatar, u.Created)
+	_, err = db.Exec("INSERT INTO users (name, password, email, avatar, created) VALUES($1,$2,$3,$4,now())",
+		u.Name, u.Password, u.Email, u.Avatar)
 
 	return err
 }

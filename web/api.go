@@ -3,6 +3,7 @@ package web
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/avalchev94/to-do-app/api"
@@ -28,6 +29,7 @@ func apiGET(url string, cookies []*http.Cookie) (*http.Response, error) {
 
 func apiPOST(url string, data interface{}, cookies []*http.Cookie) (*http.Response, error) {
 	b, err := json.Marshal(data)
+	fmt.Println(string(b), "here")
 	if err != nil {
 		return nil, err
 	}

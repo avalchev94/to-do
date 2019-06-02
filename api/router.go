@@ -26,6 +26,7 @@ func Router(sqlDB *sql.DB, redisClient *redis.Client) *gin.Engine {
 
 	db = sqlDB
 	auth = authenticator.New(redisClient, "AuthCookie")
+
 	router = gin.Default()
 	router.GET("/login", getLogged, getLogin)
 	router.POST("/login", postLogin)
@@ -35,11 +36,12 @@ func Router(sqlDB *sql.DB, redisClient *redis.Client) *gin.Engine {
 	router.GET("/user/:id/labels", getID, getUserLabels)
 	router.GET("/user/:id/scheduled_tasks", getID, getScheduledTasks)
 	router.GET("/user/:id/repetitive_tasks", getID, getRepetitiveTasks)
+	router.GET("/user/:id/boards", getID, getBoards)
 	router.POST("/user", postUser)
 
-	router.GET("/label/:id", getID, getLabel)
 	router.GET("/labels", getLogged, getUserLabels)
-	router.POST("/label", getLogged, postLabel)
+
+	router.GET("/boards", getLogged, getBoards)
 
 	router.GET("/task/:id", getID, getTask)
 	router.GET("/scheduled_tasks", getLogged, getScheduledTasks)

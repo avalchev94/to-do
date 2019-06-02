@@ -1,0 +1,148 @@
+{{define "add_task"}}
+<div class="page add-task">
+  <div class="page-title">
+    <span>Add Task</span>
+    <div class="cancel" id="modal-cancel"></div>
+  </div>
+  <div class="page-body">
+    <div class="form">
+      <input class="title" type="text" name="title" placeholder="Enter title..."><br/>
+      <textarea class="body" name="body" placeholder="Enter description..."></textarea><br/>
+      <input class="labels" type="text" name="labels" placeholder="Enter labels..."><br/>
+      <button class="add">Add</button>
+      <button class="cancel">Cancel</button>  
+      <div class="error">
+      </div>
+    </div>
+    <div class="buttons">
+      <button class="accordion-toggle" name="due_date">Due Date</button>
+      <div class="accordion-content">
+        <input class="date" type="date" placeholder="Due date..." autocomplete="off"><br/>
+        <input class="time" type="time" autocomplete="off">
+      </div>
+      <button class="accordion-toggle" name="on_date">On Date</button>
+      <div class="accordion-content">
+        <input class="date" type="date" placeholder="On date..." autocomplete="off"><br/>
+        <input class="time" type="time" autocomplete="off">
+      </div>
+      <button class="accordion-toggle" name="repeat">Repeat</button>
+      <div class="accordion-content">
+        <select class="repeat-frequency" autocomplete="off">
+          <option value="" disabled selected>Select frequency...</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+        <div class="repeatance weekly">
+          <table>
+            <tr>
+              <td>Mo</td>
+              <td>Tu</td>
+              <td>We</td>
+              <td>Th</td>
+              <td>Fr</td>
+              <td>Sa</td>
+              <td>Su</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="1"></td>
+              <td><input type="checkbox" name="2"></td>
+              <td><input type="checkbox" name="3"></td>
+              <td><input type="checkbox" name="4"></td>
+              <td><input type="checkbox" name="5"></td>
+              <td><input type="checkbox" name="6"></td>
+              <td><input type="checkbox" name="7"></td>
+            </tr>
+          </table>
+        </div>
+        <div class="repeatance monthly">
+          <table>
+            <tr>
+              <td>1</td>
+              <td>2</td>
+              <td>3</td>
+              <td>4</td>
+              <td>5</td>
+              <td>6</td>
+              <td>7</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="1"></td>
+              <td><input type="checkbox" name="2"></td>
+              <td><input type="checkbox" name="3"></td>
+              <td><input type="checkbox" name="4"></td>
+              <td><input type="checkbox" name="5"></td>
+              <td><input type="checkbox" name="6"></td>
+              <td><input type="checkbox" name="7"></td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td>9</td>
+              <td>10</td>
+              <td>11</td>
+              <td>12</td>
+              <td>13</td>
+              <td>14</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="8"></td>
+              <td><input type="checkbox" name="9"></td>
+              <td><input type="checkbox" name="10"></td>
+              <td><input type="checkbox" name="11"></td>
+              <td><input type="checkbox" name="12"></td>
+              <td><input type="checkbox" name="13"></td>
+              <td><input type="checkbox" name="14"></td>
+            </tr>
+            <tr>
+              <td>15</td>
+              <td>16</td>
+              <td>17</td>
+              <td>18</td>
+              <td>19</td>
+              <td>20</td>
+              <td>21</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="15"></td>
+              <td><input type="checkbox" name="16"></td>
+              <td><input type="checkbox" name="17"></td>
+              <td><input type="checkbox" name="18"></td>
+              <td><input type="checkbox" name="19"></td>
+              <td><input type="checkbox" name="20"></td>
+              <td><input type="checkbox" name="21"></td>
+            </tr>
+            <tr>
+              <td>22</td>
+              <td>23</td>
+              <td>24</td>
+              <td>25</td>
+              <td>26</td>
+              <td>27</td>
+              <td>28</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="22"></td>
+              <td><input type="checkbox" name="23"></td>
+              <td><input type="checkbox" name="24"></td>
+              <td><input type="checkbox" name="25"></td>
+              <td><input type="checkbox" name="26"></td>
+              <td><input type="checkbox" name="27"></td>
+              <td><input type="checkbox" name="28"></td>
+            </tr>
+            <tr>
+              <td>29</td>
+              <td>30</td>
+              <td>31</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="29"></td>
+              <td><input type="checkbox" name="30"></td>
+              <td><input type="checkbox" name="31"></td>
+            </tr>
+          </table>         
+        </div>
+        <input class="time" type="time" autocomplete="off">
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}

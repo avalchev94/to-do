@@ -1,0 +1,148 @@
+
+.add-task .page-title {
+  background-image: url("../icons/plus.svg");
+  background-size: 20px 25px; 
+  background-repeat: no-repeat;
+  background-position: 5px center;
+}
+
+.add-task .page-body {
+  display: flex;
+}
+
+.add-task .page-body button {
+  padding: 7px;
+
+  color: #000;
+  background-color: #8cc3e7;
+  box-shadow: 1px 1px 1px #000;
+  border: none;
+  cursor: pointer;
+
+  font-family: sans-serif;
+  font-size: 11pt;
+}
+
+.add-task .page-body button:active {
+  box-shadow: inset 1px 1px 1px #000;
+}
+
+.add-task .page-body .form .title {
+  width: 400px;
+  height: 30px;
+}
+
+.add-task .page-body .form .body {
+  width: 400px;
+  height: 150px;
+  margin-top: 5px;
+  padding-top: 5px;
+
+  resize: none;
+}
+
+.add-task .page-body .form .labels {
+  padding-left: 0px;
+  margin-top: 5px;
+  width: 405px;
+}
+
+.add-task .page-body .form button {
+  width: 100px;
+  margin-right: 10px;
+}
+
+.tagify tag>div {
+  background-color: #8cc3e7;
+  border-radius: 2px;
+}
+
+.tagify tag>x {
+  margin-top: -1px;
+}
+
+.add-task .page-body .buttons {
+  width: 250px;
+  margin-left: 40px;
+}
+
+.add-task .page-body .buttons button {
+  width: 250px;
+  margin-bottom: 4px;
+}
+
+.add-task .page-body .buttons .active {
+  box-shadow: inset 1px 1px 1px #000;
+}
+
+.add-task .page-body .buttons .accordion-content {
+  display: none;
+  width: 100%;
+  height: auto;
+  padding: 7px;
+}
+
+.add-task .page-body .buttons .time,
+.add-task .page-body .buttons .date {
+  width: 190px;
+  height: 30px;
+  padding-left: 40px;
+
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: 5px center;
+}
+
+.add-task .page-body .buttons .date {
+  background-image: url("../icons/calendar.svg");
+}
+
+.add-task .page-body .buttons .time {
+  background-image: url("../icons/clock.svg");
+  margin-top: 5px;
+}
+
+.add-task .page-body .buttons .repeat-frequency {
+  width: 232px;
+  height: 30px;
+
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background-image: url("../icons/triangle-down.svg");
+  background-size: 15px 20px;
+  background-repeat: no-repeat;
+  background-position: 95% center;
+}
+
+.add-task .page-body .buttons .repeat-frequency option[value=""] {
+  display: none;
+}
+
+.add-task .page-body .buttons .repeatance {
+  display: none;
+
+  margin-top: 5px;
+  width: 100%;
+  height: auto;
+  max-height: 105px;
+  overflow: auto;
+  overflow-y: visible;
+}
+
+.add-task .page-body .buttons .repeatance table {
+  font-family: sans-serif;
+  font-size: 11pt;
+  text-decoration: none;
+
+  border-collapse: collapse;
+}
+
+.add-task .page-body .buttons .repeatance td {
+  padding: 3px 0px;
+  width: 32px;
+  text-align: center;
+
+  background-color: #fff;
+  border: 1px solid #a0a0a0;
+}

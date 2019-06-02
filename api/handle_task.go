@@ -36,7 +36,8 @@ func postRepetitiveTask(ctx *gin.Context) {
 }
 
 func getScheduledTasks(ctx *gin.Context) {
-	tasks, err := database.GetScheduledTasks(ctx.GetInt64("id"), db)
+	params := database.ParseParameters(ctx.Request.URL)
+	tasks, err := database.GetScheduledTasks(ctx.GetInt64("id"), params, db)
 	handleErrorGet(tasks, err, ctx)
 }
 

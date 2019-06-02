@@ -4,10 +4,14 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>{{.Title}}</title>
-  <link rel="stylesheet" type="text/css" media="screen" href="static/css/main.css"/>
   <link href="https://fonts.googleapis.com/css?family=Do+Hyeon" rel="stylesheet"> 
-  <script src="static/js/jquery-3.3.1.min.js"></script>
-  <script src="static/js/main.js"></script>
+  <link rel="stylesheet" type="text/css" href="static/css/tagify.css"/>
+  <link rel="stylesheet" type="text/css" href="static/css/layout.css"/>
+  <link rel="stylesheet" type="text/css" href="static/css/add_task.css"/>
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+  <script src="static/js/tagify.js" type="text/javascript" charset="utf-8"></script>  
+  <script src="static/js/add_task.js" type="text/javascript" charset="utf-8"></script>
+  <script src="static/js/main.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
   <div class="top-bar">
@@ -18,9 +22,19 @@
       <input type="text" class="field">
     </div>
     <div class="menu">
-      <a href="#" class="icon add"></a>
-      <a href="#" class="icon bell"></a>
-      <a href="#" class="icon settings"></a>
+      <div tabindex="0" class="item">
+        <div class="icon add"></div>
+        <div class="dropdown">
+          <button id="add-task">New Task</button>
+          <button>New Board</button>
+        </div>
+      </div>
+      <div tabindex="0" class="item">
+        <div class="icon bell"></div>
+      </div>
+      <div tabindex="0" class="item">
+        <div class="icon settings"></div>
+      </div>
     </div>
   </div>
   <div class="content">
@@ -40,6 +54,9 @@
       {{template "dashboard"}}
     {{end}}
     </div>
+  </div>
+  <div class="page-container" id="add-task-page">
+    {{template "add_task"}}
   </div>
 </body>
 </html>

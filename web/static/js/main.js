@@ -1,4 +1,20 @@
+let activeModalPage = null;
+
 $(document).ready(function(){
+  initTopMenu();
+  initSideMenu();
+
+  initModalPages();
+  initAddTaskPage();
+})
+
+function initTopMenu() {
+  $("#add-task").click(function(e){
+    activeModalPage = loadAddTaskPage();
+  })
+}
+
+function initSideMenu() {
   let toggled = false
   $("#menu-toggle").click(function(e){
     let display = toggled ? "none" : "inline"
@@ -8,4 +24,15 @@ $(document).ready(function(){
     
     toggled = !toggled  
   })
-})
+}
+
+function initModalPages() {
+  $("#modal-cancel").click(function(){
+    $(activeModalPage).fadeOut(200);
+    activeModalPage = null;
+  })
+}
+
+function alertBox(msg) {
+  alert(msg)
+}

@@ -54,11 +54,10 @@ func (ts *TaskSchedule) add(tx *sql.Tx) error {
 	if err := ts.OK(); err != nil {
 		return err
 	}
-	ts.Created = time.Now()
 	//TODO: check if the task is already scheduled?
 	row := tx.QueryRow(`INSERT INTO task_schedule (task_id,type,date,time,created,finished)
-											VALUES($1,$2,$3,$4,$5,$6) RETURNING id`,
-		ts.TaskID, ts.Type, ts.Date.String(), ts.Time.HhMmSs(), ts.Created, ts.Finished)
+											VALUES($1,$2,$3,$4,now(),$5) RETURNING id`,
+		ts.TaskID, ts.Type, ts.Date, ts.Time, ts.Finished)
 
 	return row.Scan(&ts.ID)
 }

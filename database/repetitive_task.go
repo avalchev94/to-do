@@ -76,7 +76,7 @@ func GetRepetitiveTask(taskID int64, db *sql.DB) (*RepetitiveTask, error) {
 		return nil, err
 	}
 
-	return &t, t.Task.getLabels(db)
+	return &t, nil
 }
 
 func GetRepetitiveTasksAt(time time.Time, tasks chan<- *RepetitiveTask, db *sql.DB) error {
